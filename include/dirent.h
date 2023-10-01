@@ -65,7 +65,7 @@
 #  ifdef __DARWIN_INODE64
 #    define __MPLS_INODE64(sym) __DARWIN_INODE64(sym)
 #  else
-#    define __MPLS_INODE64(sym) __DARWIN_ALIAS(sym)
+#    define __MPLS_INODE64(sym)
 #  endif
 #endif
 
@@ -94,7 +94,7 @@ struct __MPLS_DIR {
 
 __MP__BEGIN_DECLS
 
-extern DIR *fdopendir(int fd) __MPLS_ALIAS_I(fdopendir);
+extern DIR *fdopendir(int fd);
 
 /* Wrapper functions to support fdopendir */
 extern DIR *__mpls_opendir(const char *name);
