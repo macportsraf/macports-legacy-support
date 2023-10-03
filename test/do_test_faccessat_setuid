@@ -16,6 +16,10 @@
 
 # When run as root, test faccessat() properly
 
+# Note: On 10.4, this doesn't work because setreuid/setregid have no effect
+# (and there's no _uucp user or supplementary groups used, but that could be
+# addressed if it were worth it).
+
 if [ "$(whoami)" != root ]
 then
 	echo 'Run "sudo make test_faccessat_setuid" to test faccessat properly'

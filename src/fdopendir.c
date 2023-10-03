@@ -29,6 +29,14 @@
 #include <sys/errno.h>
 
 #undef DIR
+#undef fdopendir
+#undef opendir
+#undef closedir
+#undef readdir
+#undef readdir_r
+#undef rewinddir
+#undef seekdir
+#undef telldir
 
 
 /*
@@ -41,7 +49,7 @@
  * deallocated by __mpls_closedir() (see closedir() macro in <dirent.h>).
  */
 
-__MPLS_DIR *fdopendir(int dirfd) {
+__MPLS_DIR *__mpls_fdopendir(int dirfd) {
 
     /* Check dirfd here (for macos-10.4, see _ATCALL() and best_fchdir()) */
 
@@ -52,7 +60,7 @@ __MPLS_DIR *fdopendir(int dirfd) {
 
     /* Open the supplied directory safely */
 
-    DIR *dir = _ATCALL(dirfd, ".", NULL, __mpls_libc_opendir("."));
+    DIR *dir = _ATCALL(dirfd, ".", NULL, opendir("."));
     if (!dir)
         return 0;
 
@@ -60,7 +68,7 @@ __MPLS_DIR *fdopendir(int dirfd) {
 
     __MPLS_DIR *mplsdir = malloc(sizeof(*mplsdir));
     if (!mplsdir) {
-        (void)__mpls_libc_closedir(dir);
+        (void)closedir(dir);
         errno = ENOMEM;
         return 0;
     }
@@ -80,13 +88,13 @@ __MPLS_DIR *fdopendir(int dirfd) {
 
 __MPLS_DIR *__mpls_opendir(const char *name) {
 
-    DIR *dir = __mpls_libc_opendir(name);
+    DIR *dir = opendir(name);
     if (!dir)
         return 0;
 
     __MPLS_DIR *mplsdir = malloc(sizeof(*mplsdir));
     if (!mplsdir) {
-        (void)__mpls_libc_closedir(dir);
+        (void)closedir(dir);
         errno = ENOMEM;
         return 0;
     }
@@ -112,7 +120,7 @@ int __mpls_closedir(__MPLS_DIR *mplsdir) {
         return -1;
     }
 
-    int rc = __mpls_libc_closedir(mplsdir->__mpls_dir);
+    int rc = closedir(mplsdir->__mpls_dir);
 
     if (mplsdir->__mpls_dirfd != -1)
         PROTECT_ERRNO(close(mplsdir->__mpls_dirfd));
@@ -127,7 +135,7 @@ int __mpls_closedir(__MPLS_DIR *mplsdir) {
  */
 
 struct dirent *__mpls_readdir(__MPLS_DIR *mplsdir) {
-    return __mpls_libc_readdir(mplsdir->__mpls_dir);
+    return readdir(mplsdir->__mpls_dir);
 }
 
 /*
@@ -135,7 +143,7 @@ struct dirent *__mpls_readdir(__MPLS_DIR *mplsdir) {
  */
 
 int __mpls_readdir_r(__MPLS_DIR *mplsdir, struct dirent *entry, struct dirent **result) {
-    return __mpls_libc_readdir_r(mplsdir->__mpls_dir, entry, result);
+    return readdir_r(mplsdir->__mpls_dir, entry, result);
 }
 
 /*
@@ -143,7 +151,7 @@ int __mpls_readdir_r(__MPLS_DIR *mplsdir, struct dirent *entry, struct dirent **
  */
 
 void __mpls_rewinddir(__MPLS_DIR *mplsdir) {
-    __mpls_libc_rewinddir(mplsdir->__mpls_dir);
+    rewinddir(mplsdir->__mpls_dir);
 }
 
 /*
@@ -151,7 +159,7 @@ void __mpls_rewinddir(__MPLS_DIR *mplsdir) {
  */
 
 void __mpls_seekdir(__MPLS_DIR *mplsdir, long loc) {
-    __mpls_libc_seekdir(mplsdir->__mpls_dir, loc);
+    seekdir(mplsdir->__mpls_dir, loc);
 }
 
 /*
@@ -159,7 +167,7 @@ void __mpls_seekdir(__MPLS_DIR *mplsdir, long loc) {
  */
 
 long __mpls_telldir(__MPLS_DIR *mplsdir) {
-    return __mpls_libc_telldir(mplsdir->__mpls_dir);
+    return telldir(mplsdir->__mpls_dir);
 }
 
 /*
