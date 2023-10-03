@@ -16,9 +16,10 @@
 
 # When run as root, test faccessat() properly
 
-# Note: On 10.4, this doesn't work because setreuid/setregid have no effect
-# (and there's no _uucp user or supplementary groups used, but that could be
-# addressed if it were worth it).
+# Note: On 10.4, this doesn't work because setreuid/setregid are incorrect.
+# They set effective uid/gid, but not real uid/gid. And there's no _uucp
+# user or supplementary groups used, but that could be addressed if it were
+# worth it.
 
 if [ "$(whoami)" != root ]
 then
