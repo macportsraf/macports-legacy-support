@@ -29,7 +29,6 @@
 #include <sys/errno.h>
 
 #undef DIR
-#undef fdopendir
 #undef opendir
 #undef closedir
 #undef readdir
@@ -49,7 +48,7 @@
  * deallocated by __mpls_closedir() (see closedir() macro in <dirent.h>).
  */
 
-__MPLS_DIR *__mpls_fdopendir(int dirfd) {
+__MPLS_DIR *fdopendir(int dirfd) {
 
     /* Check dirfd here (for macos-10.4, see _ATCALL() and best_fchdir()) */
 

@@ -38,7 +38,11 @@ struct __MPLS_DIR {
 
 __MP__BEGIN_DECLS
 
-extern DIR *__mpls_fdopendir(int fd);
+#ifndef __DARWIN_ALIAS_I
+extern DIR *fdopendir(int fd) __DARWIN_ALIAS(fdopendir);
+#else
+extern DIR *fdopendir(int fd) __DARWIN_ALIAS_I(fdopendir);
+#endif
 
 /* Wrapper functions/macros to support fdopendir */
 extern DIR *__mpls_opendir(const char *name);
@@ -50,7 +54,6 @@ extern void __mpls_seekdir(DIR *dir, long loc);
 extern long __mpls_telldir(DIR *dir);
 extern int __mpls_dirfd(DIR *dir);
 
-#define fdopendir __mpls_fdopendir
 #define opendir __mpls_opendir
 /*
 ** Add params to closedir to avoid apparently triggering a mysterious
