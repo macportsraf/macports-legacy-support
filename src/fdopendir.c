@@ -56,6 +56,10 @@ DIR *fdopendir(int dirfd) {
     dir->__dd_fd = dirfd;
     #endif
 
+	/* Rewind to the start of the directory (in case it's not there already) */
+
+	rewinddir(dir);
+
     /* Close given fd on exec (just in case not already done) */
 
     (void)fcntl(dirfd, F_SETFD, FD_CLOEXEC);
